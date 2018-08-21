@@ -7,6 +7,7 @@ from utils import log
 
 from routes import route_static
 from routes import route_dict
+from routes_todo import route_dict as todo_route
 
 
 # 定义一个 class 用于保存请求的数据
@@ -87,12 +88,10 @@ def response_for_path(path):
     没有处理的 path 会返回 404
     """
     r = {
-        '/static': route_static,
-        # '/': route_index,
-        # '/login': route_login,
-        # '/messages': route_message,
+        '/static': route_static,        
     }
     r.update(route_dict)
+    r.update(todo_route)
     response = r.get(path, error)
     return response(request)
 
