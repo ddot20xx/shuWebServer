@@ -33,7 +33,7 @@ class Model(object):
         返回数据的存储路径
         """
         classname = cls.__name__
-        path = '{}.txt'.format(classname)
+        path = 'data/{}.txt'.format(classname)
         return path
 
     @classmethod
@@ -103,10 +103,31 @@ class Model(object):
         l = [m.__dict__ for m in models]
         path = self.db_path()
         save(l, path)
+    
+    def remove(self):
+        """
+        删除数据
+        """
+        models = self.all()
+        if self.__dict__.get('id') is not None:
+            index = -1
+            for i, m in enumerate(models):
+                if m.id == self.id:
+                    index = i
+                    break
+            # 看看是否找到下标
+            # 如果找到，就删掉这条数据
+            if index > -1:
+                del models[index]
+        # 保存
+        l = [m.__dict__ for m in models]
+        path = self.db_path()
+        save(l, path)
+
 
     def __repr__(self):
         """
-        自定应显示函数
+        自定义显示函数
         """
         classname = self.__class__.__name__
         properties = ['{}: ({})'.format(k, v) for k, v in self.__dict__.items()]
@@ -116,6 +137,9 @@ class Model(object):
 
 class User(Model):
     def __init__(self, form):
+        self.id = form.get('id', None)
+        if self.id is not None:
+            self.id = int(self.id)
         self.username = form.get('username', '')
         self.password = form.get('password', '')
 
